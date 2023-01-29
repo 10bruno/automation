@@ -1,0 +1,50 @@
+package br.com.automation.controller;
+
+import br.com.automation.util.User;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import org.apache.http.HttpStatus;
+import org.testng.annotations.Test;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.is;
+
+public class TestControllerGetController {
+
+    @Test
+    void testResponseListUsers() {
+
+        RestAssured.baseURI = "https://reqres.in/api";
+
+        given().
+        when().
+                get("/users?page=1").
+        then().
+                statusCode(HttpStatus.SC_OK).
+                body(
+                        "page", is(1),
+                        "per_page", is(6),
+                        "total", is(12),
+                        "total_pages", is(2)
+                );
+    }
+
+    @Test
+    void testResponseTokenLogin() {
+
+        RestAssured.baseURI = "https://reqres.in/api/login";
+
+        var user = new User("eve.holt@reqres.in", "cityslicka");
+
+        given().
+                contentType(ContentType.JSON).
+                body(user).
+        when().
+                post().
+        then().
+                statusCode(HttpStatus.SC_OK).
+                body(
+                        "token", is("QpwL5tke4Pnpja7X4")
+                );
+    }
+}
