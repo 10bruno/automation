@@ -17,12 +17,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class UsersTest {
 
     private Response res;
+    private Integer size;
+    private String url;
+    private String text;
 
     @BeforeClass(description = "setup")
     void setup() {
         RestAssured.baseURI = "https://reqres.in";
         RestAssured.basePath = "/api/users";
         res = given().param("page", 1).when().get();
+        size = getDataSize();
+        url = getSupportUrl();
+        text = getSupportText();
     }
 
     @Test(testName = "1 - Test user list size Restassured Bruto + Hamcrest")
@@ -42,10 +48,6 @@ public class UsersTest {
     @Test(testName = "2 - Test user list size Restassured + JUnit")
     void test1_2() {
 
-        Integer size = getDataSize();
-        String url = getSupportUrl();
-        String text = getSupportText();
-
         assertEquals(HttpStatus.SC_OK, res.statusCode());
         assertTrue(size >= TestConstants.SIZE_LIST);
         assertEquals(TestConstants.SUPPORT_URL, url);
@@ -54,10 +56,6 @@ public class UsersTest {
 
     @Test(testName = "3 - Test user list size Restassured + AssertJ")
     void test1_3() {
-
-        Integer size = getDataSize();
-        String url = getSupportUrl();
-        String text = getSupportText();
 
         assertThat(res.statusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(size).isGreaterThanOrEqualTo(TestConstants.SIZE_LIST);
